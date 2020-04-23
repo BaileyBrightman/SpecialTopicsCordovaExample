@@ -26,9 +26,18 @@ var app = {
     //
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
+    // pause is when the app loses focus, like when they leave it without shutting it down, resume is when they come back.
+    // A good use for these events might be to stop/start anything that won't be needed while the app isn't running
     onDeviceReady: function() {
-        document.addEventListener("volumeupbutton",onBackKeyDown, false);
-        document.getElementById("cameraGetPicture").addEventListener("click", cameraGetPicture); 
+
+        // Camera 
+        document.getElementById("cameraGetPicture").addEventListener("click", cameraGetPicture);
+
+        document.getElementById('set').addEventListener("click", setLocalStorage);
+        document.getElementById('show').addEventListener("click", showLocalStorage);
+
+        // Capture the back button press and call a method
+        document.addEventListener("backbutton",onBackKeyDown, false);
         this.receivedEvent('deviceready');
 
     },
@@ -50,48 +59,53 @@ app.initialize();
 
 
 
-document.getElementById('set').addEventListener("click", setLocalStorage);
-document.getElementById('show').addEventListener("click", showLocalStorage);
+
 // document.getElementById('remove').addEventListener("click", removeFromLocalStorage);
 
 let localStorage = window.localStorage;
 
 
 function setLocalStorage(){
+
+    // Get the value from the text field and store it in the local storage
+    // We do this to persist the data both on the browser and on any mobile device we use
     localStorage.setItem('name', document.getElementById('name').value);
 }
 function showLocalStorage(){
-    console.log(localStorage.getItem('name'));
     document.getElementById('showName').innerHTML = localStorage.getItem('name'); 
-
 }
 
-document.addEventListener("backbutton",onBackKeyDown, false);
 
 function onBackKeyDown(e){
+    // The back button will by default return to the last app. We don't want that, so prevent the default
     e.preventDefault();
+    // A good use for this would be to make it go back to the previous page. We'll just trap them in though.
     alert("You will never be free");
 }
 
 
-
 function cameraGetPicture() {
-    console.log('here');
     navigator.camera.getPicture(onSuccess, onFail, {
-       destinationType: Camera.DestinationType.FILE_URL,
-       sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM
-    }).then();
-    
+       destinationType: Camera.DestinationType.DATA_URL,
+       sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    });
  
- }
- 
- function onSuccess(imageURL) {
-    // document.getElementById('showName').innerHTML = imageURL; 
-
+    function onSuccess(imageURL) {
        var image = document.getElementById('myImage');
-       image.src = "data:image/jpeg;base64,"+imageURL;
+       image.src = "data:image/jpeg;base64," + imageURL;
     }
  
     function onFail(message) {
        alert('Failed because: ' + message);
     }
+ 
+ }
+ 
+    // function onFail(message) {
+    //    // Uploading the image failed, inform the user.
+    //     alert('Failed because: ' + message);
+    // }
+
+function onBatteryStatus(info){
+    alert(`Your Phone is at ${info.level}% and is currently ${info.isPlugged ? "Plugged In":"Unplugged"}`);
+}

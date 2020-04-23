@@ -37,13 +37,20 @@
     </head>
     <body>
         <div class="app">
+
+            <!--
+                Any inline javascript will be disabled by cordova unless we enable the setting.
+                This is however bad practice since it is inheritly insecure.
+             -->
+
             <input type="text" id="name" placeholder="name">
             <button id="set">SET LOCAL STORAGE</button>
             <button id="show">SHOW LOCAL STORAGE</button>
-            <button id="remove">REMOVE PROJECT</button>
             <h1 id="showName">Hey! </h1>
-            <button id="cameraGetPicture">GET PICTURE</button>
-            <img id = "myImage"></img>
+
+            <button id = "cameraGetPicture">GET PICTURE</button>
+
+            <img id = "myImage"></img><!-- To be replaced by our uploaded image -->
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>

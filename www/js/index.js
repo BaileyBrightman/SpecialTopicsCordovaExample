@@ -30,6 +30,9 @@ var app = {
     // A good use for these events might be to stop/start anything that won't be needed while the app isn't running
     onDeviceReady: function() {
 
+        // Camera 
+        document.getElementById("cameraGetPicture").addEventListener("click", cameraGetPicture);
+
         document.getElementById('set').addEventListener("click", setLocalStorage);
         document.getElementById('show').addEventListener("click", showLocalStorage);
 
@@ -63,6 +66,7 @@ let localStorage = window.localStorage;
 
 
 function setLocalStorage(){
+
     // Get the value from the text field and store it in the local storage
     // We do this to persist the data both on the browser and on any mobile device we use
     localStorage.setItem('name', document.getElementById('name').value);
@@ -80,7 +84,22 @@ function onBackKeyDown(e){
 }
 
 
-
+function cameraGetPicture() {
+    navigator.camera.getPicture(onSuccess, onFail, {
+       destinationType: Camera.DestinationType.DATA_URL,
+       sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    });
+ 
+    function onSuccess(imageURL) {
+       var image = document.getElementById('myImage');
+       image.src = "data:image/jpeg;base64," + imageURL;
+    }
+ 
+    function onFail(message) {
+       alert('Failed because: ' + message);
+    }
+ 
+ }
  
     // function onFail(message) {
     //    // Uploading the image failed, inform the user.
